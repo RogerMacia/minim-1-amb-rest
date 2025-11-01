@@ -140,9 +140,9 @@ public class ProductsService {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer = "List")
     })
-    @Path("/productsByPrice")
+    @Path("/doneProducts/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDoneOrdersFromUser(String id) {
+    public Response getDoneOrdersFromUser(@PathParam("id") String id) {
         List<Order> orders = this.pm.getDoneOrdersFromUser(id);
 
         GenericEntity<List<Order>> entity = new GenericEntity<List<Order>>(orders) {};
@@ -154,7 +154,7 @@ public class ProductsService {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer = "List")
     })
-    @Path("/productsByPrice")
+    @Path("/productsBySales")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProductsBySales() {
         List<Product> products = this.pm.getProductsBySales();
