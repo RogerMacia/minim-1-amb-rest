@@ -1,11 +1,15 @@
 package edu.upc.dsa.models;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
+@XmlRootElement
 public class Order {
     private int id;
     private User user;
     private List<Product> products;
 
+    public Order() {}
     public Order(int id) {
         this.id = id;
     }

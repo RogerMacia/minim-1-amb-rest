@@ -14,6 +14,7 @@ public class ProductManagerImpl implements ProductManager {
     private HashMap<String, User> users;
 
     private int orderId;
+    private boolean isInitialized;
 
     private static final Logger logger = Logger.getLogger(ProductManagerImpl.class);
 
@@ -25,6 +26,7 @@ public class ProductManagerImpl implements ProductManager {
             pm.products = new ArrayList<>();
             pm.orders = new QueueImpl<Order>(64);
             pm.users = new HashMap<>();
+            pm.isInitialized = true;
         }
         return pm;
     }

@@ -11,6 +11,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,11 +19,11 @@ import java.util.List;
 @Path("/productMng")
 public class ProductsService {
 
-    private ProductManager pm;
+    private ProductManagerImpl pm;
 
     public ProductsService() {
         this.pm = ProductManagerImpl.getInstance();
-        if (pm == null) {
+        if (pm.getProducts().size() == 0) {
             Product p1 = new Product(1, "Hamburguesa", 7.5);
             Product p2 = new Product(2, "Patates", 3);
             Product p3 = new Product(3, "Pasta", 5);
@@ -96,7 +97,7 @@ public class ProductsService {
     }
 
     @GET
-    @ApiOperation(value = "get all products sorted by ascending price")
+    @ApiOperation(value = "get all products sorted by ascending price", notes = "asdasd")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer = "List")
     })

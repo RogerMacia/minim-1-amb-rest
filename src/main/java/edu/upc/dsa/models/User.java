@@ -1,12 +1,16 @@
 package edu.upc.dsa.models;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 
+@XmlRootElement
 public class User {
     private int id;
     private String name;
     private LinkedList<Order> pendingOrders;
     private LinkedList<Order> servedOrders;
 
+    public User() {}
     public User(int id, String name) {
         this.id = id;
         this.name = name;
