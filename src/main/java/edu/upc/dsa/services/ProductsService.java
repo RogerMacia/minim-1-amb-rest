@@ -11,14 +11,12 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 @Api(value = "/productMng")
 @Path("/productMng")
 public class ProductsService {
-
     private ProductManagerImpl pm;
 
     public ProductsService() {
@@ -113,13 +111,19 @@ public class ProductsService {
     @POST
     @ApiOperation(value = "make an order")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
+            @ApiResponse(code = 201, message = "Created", response = Product.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Not found")
     })
     @Path("/makeOrder/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response makeOrder(List<String> idProducts, @PathParam("id") String idUser) {
+    public Response makeOrder(List<Product> Products, @PathParam("id") String idUser) {
+        List<String> idProducts = new ArrayList<>();
+
+        for (Product p : Products) {
+            idProducts.add(p.getId());
+        }
+
         if (idProducts.isEmpty()) return Response.status(400).entity("Products' IDs invalid").build();
         for (String id : idProducts) {
             if (this.pm.getProduct(id) == null) {
@@ -128,7 +132,7 @@ public class ProductsService {
         }
         if (pm.getUser(idUser) == null) return Response.status(404).entity("User not found").build();
         pm.makeOrder(idProducts, idUser);
-        return Response.status(201).entity(idProducts).build();
+        return Response.status(201).entity(Products).build();
     }
 
     @POST

@@ -1,5 +1,8 @@
 package edu.upc.dsa.models;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Product {
     private String id;
     private String name;

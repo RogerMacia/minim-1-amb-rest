@@ -1,6 +1,10 @@
 package edu.upc.dsa.data;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Comparator;
+import java.util.LinkedList;
 import org.apache.log4j.Logger;
 import edu.upc.dsa.models.*;
 import edu.upc.dsa.util.RandomUtils;
@@ -79,12 +83,6 @@ public class ProductManagerImpl implements ProductManager {
         this.users.put(user.getId(), user);
         logger.info("Added user");
     }
-
-    public void addUser(String name) {
-        String id = RandomUtils.getId();
-        User user = new User(id, name);
-    }
-
 
     @Override
     public List<Product> getProductsByPrice() {
