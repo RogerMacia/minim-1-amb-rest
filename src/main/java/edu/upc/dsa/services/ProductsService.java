@@ -99,7 +99,7 @@ public class ProductsService {
     @GET
     @ApiOperation(value = "get all products sorted by ascending price")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer = "List")
+            @ApiResponse(code = 200, message = "OK", response = Product.class, responseContainer = "List")
     })
     @Path("/productsByPrice")
     @Produces(MediaType.APPLICATION_JSON)
@@ -113,13 +113,20 @@ public class ProductsService {
     @POST
     @ApiOperation(value = "make an order")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful"),
-            @ApiResponse(code = 500, message = "Validation Error")
+            @ApiResponse(code = 201, message = "Created"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not found")
     })
     @Path("/makeOrder/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response makeOrder(List<String> idProducts, @PathParam("id") String idUser) {
-        if (idProducts == null || pm.getUser(idUser) == null) return Response.status(500).entity(idProducts).build();
+        if (idProducts.isEmpty()) return Response.status(400).entity("Products' IDs invalid").build();
+        for (String id : idProducts) {
+            if (this.pm.getProduct(id) == null) {
+                return Response.status(404).entity("Product not found").build();
+            }
+        }
+        if (pm.getUser(idUser) == null) return Response.status(404).entity("User not found").build();
         pm.makeOrder(idProducts, idUser);
         return Response.status(201).entity(idProducts).build();
     }
@@ -147,7 +154,7 @@ public class ProductsService {
     public Response getDoneOrdersFromUser(@PathParam("id") String id) {
         List<Order> orders = this.pm.getDoneOrdersFromUser(id);
 
-        if (orders == null) return Response.status(404).entity("Not found").build();
+        if (orders == null) return Response.status(404).entity("No done orders from user with id = " + id).build();
         GenericEntity<List<Order>> entity = new GenericEntity<List<Order>>(orders) {};
         return Response.status(201).entity(entity).build();
     }

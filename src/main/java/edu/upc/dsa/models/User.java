@@ -1,7 +1,10 @@
 package edu.upc.dsa.models;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.LinkedList;
 
+@XmlRootElement
 public class User {
     private String id;
     private String name;
@@ -28,6 +31,7 @@ public class User {
         this.name = name;
     }
 
+    @XmlTransient
     public LinkedList<Order> getPendingOrders() {
         return pendingOrders;
     }
@@ -35,6 +39,7 @@ public class User {
         this.pendingOrders = pendingOrders;
     }
 
+    @XmlTransient
     public LinkedList<Order> getServedOrders() {
         return servedOrders;
     }
