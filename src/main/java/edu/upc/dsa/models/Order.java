@@ -1,23 +1,27 @@
 package edu.upc.dsa.models;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import edu.upc.dsa.util.RandomUtils;
+
 import java.util.List;
 
-@XmlRootElement
 public class Order {
-    private int id;
+    private String id;
     private User user;
     private List<Product> products;
 
-    public Order() {}
-    public Order(int id) {
-        this.id = id;
+    public Order() {
     }
 
-    public int getId() {
+    public Order(User user, List<Product> products) {
+        this.id = RandomUtils.getId();
+        this.user = user;
+        this.products = products;
+    }
+
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

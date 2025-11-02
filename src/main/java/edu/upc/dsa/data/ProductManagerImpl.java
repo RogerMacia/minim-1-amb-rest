@@ -3,6 +3,7 @@ package edu.upc.dsa.data;
 import java.util.*;
 import org.apache.log4j.Logger;
 import edu.upc.dsa.models.*;
+import edu.upc.dsa.util.RandomUtils;
 
 public class ProductManagerImpl implements ProductManager {
     private static ProductManagerImpl pm;
@@ -13,20 +14,15 @@ public class ProductManagerImpl implements ProductManager {
     private QueueImpl<Order> orders;
     private HashMap<String, User> users;
 
-    private int orderId;
-    private boolean isInitialized;
-
     private static final Logger logger = Logger.getLogger(ProductManagerImpl.class);
 
     public static ProductManagerImpl getInstance() {
         if (pm == null) {
             pm = new ProductManagerImpl();
 
-            pm.orderId = 0;
             pm.products = new ArrayList<>();
             pm.orders = new QueueImpl<Order>(64);
             pm.users = new HashMap<>();
-            pm.isInitialized = true;
         }
         return pm;
     }
@@ -52,6 +48,13 @@ public class ProductManagerImpl implements ProductManager {
         this.users = users;
     }
 
+    public Product getProduct(String id) {
+        for (Product p :  this.products)
+            if (p.getId().equals(id))
+                return p;
+        return null;
+    }
+
     @Override
     public User getUser(String id) {
         return users.get(id);
@@ -64,9 +67,22 @@ public class ProductManagerImpl implements ProductManager {
     }
 
     @Override
+    public void addProduct(String name, double price) {
+        String id = RandomUtils.getId();
+
+        this.products.add(new Product(id, name, price));
+        logger.info("Added product");
+    }
+
+    @Override
     public void addUser(User user) {
-        this.users.put(String.valueOf(user.getId()), user);
+        this.users.put(user.getId(), user);
         logger.info("Added user");
+    }
+
+    public void addUser(String name) {
+        String id = RandomUtils.getId();
+        User user = new User(id, name);
     }
 
 
@@ -78,12 +94,15 @@ public class ProductManagerImpl implements ProductManager {
     }
 
     @Override
-    public void makeOrder(List<Product> products, String id) {
-        User user = users.get(id);
-        Order o = new Order(orderId + 1);
-        o.setProducts(products);
-        o.setUser(user);
+    public void makeOrder(List<String> idProducts, String idUser) {
+        User user = users.get(idUser);
+        List<Product> products = new ArrayList<>();
 
+        for (String idProduct : idProducts) {
+            products.add(getProduct(idProduct));
+        }
+
+        Order o = new Order(user, products);
         orders.push(o);
         logger.info("Ordre creada");
 
@@ -101,8 +120,6 @@ public class ProductManagerImpl implements ProductManager {
             orders.pop();
             return;
         }
-
-        orderId += 1;
 
         for  (Product product : products) {
             product.setNumSales(product.getNumSales() + 1);

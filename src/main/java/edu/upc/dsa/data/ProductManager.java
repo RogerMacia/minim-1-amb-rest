@@ -7,12 +7,13 @@ public interface ProductManager {
     public User getUser(String id);
 
     public void addProduct(Product p);
+    public void addProduct(String name, double price);
 
     public void addUser(User user);
 
     public List<Product> getProductsByPrice();
 
-    public void makeOrder(List<Product> products, String id);
+    public void makeOrder(List<String> idProducts, String idUser);
 
     public void serveOrder();
 

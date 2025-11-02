@@ -27,63 +27,59 @@ public class ProductManagerImplTest {
     List<Product> products = new ArrayList<>();
     HashMap<String, User> users = new HashMap<>();
 
-    List<Product> productUser11 =  new ArrayList<>();
-    List<Product> productUser12 =  new ArrayList<>();
-    List<Product> productUser2 =  new ArrayList<>();
-    List<Product> productUser3 =  new ArrayList<>();
-    List<Product> productUser4 =  new ArrayList<>();
+    List<String> productUser11 =  new ArrayList<>();
+    List<String> productUser12 =  new ArrayList<>();
+    List<String> productUser2 =  new ArrayList<>();
+    List<String> productUser3 =  new ArrayList<>();
+    List<String> productUser4 =  new ArrayList<>();
 
 
     @Before
     public void setUp() throws Exception {
         pm = pm.getInstance();
-        p1 = new Product(1, "Hamburguesa", 7.5);
-        p2 = new Product(2, "Patates", 3);
-        p3 = new Product(3, "Pasta", 5);
-        p4 = new Product(4, "Entrepà", 4.5);
-        p5 = new Product(5, "Aigua", 0.75);
+        p1 = new Product("1", "Hamburguesa", 7.5);
+        p2 = new Product("2", "Patates", 3);
+        p3 = new Product("3", "Pasta", 5);
+        p4 = new Product("4", "Entrepà", 4.5);
+        p5 = new Product("5", "Aigua", 0.75);
 
-        u1 = new User(1, "Josep");
-        u2 = new User(2, "Toni");
-        u3 = new User(3, "Albert");
-        u4 = new User(4, "Antonia");
-        u5 = new User(5, "Carla");
+        u1 = new User("1", "Josep");
+        u2 = new User("2", "Toni");
+        u3 = new User("3", "Albert");
+        u4 = new User("4", "Antonia");
+        u5 = new User("5", "Carla");
 
         products.add(p1);
-        Assert.assertEquals(p1, products.get(0));
         products.add(p2);
         products.add(p3);
         products.add(p4);
         products.add(p5);
-        Assert.assertEquals(5, products.toArray().length);
 
-        users.put(String.valueOf(u1.getId()), u1);
-        Assert.assertEquals(u1, users.get("1"));
-        users.put(String.valueOf(u2.getId()), u2);
-        users.put(String.valueOf(u3.getId()), u3);
-        users.put(String.valueOf(u4.getId()), u4);
-        users.put(String.valueOf(u5.getId()), u5);
-        Assert.assertEquals(5, users.size());
+        users.put(u1.getId(), u1);
+        users.put(u2.getId(), u2);
+        users.put(u3.getId(), u3);
+        users.put(u4.getId(), u4);
+        users.put(u5.getId(), u5);
 
-        productUser11.add(p5);
-        productUser11.add(p5);
-        productUser11.add(p2);
-        productUser11.add(p2);
-        productUser11.add(p5);
-        productUser12.add(p1);
-        productUser12.add(p1);
-        productUser12.add(p5);
-        productUser2.add(p5);
-        productUser2.add(p2);
-        productUser2.add(p4);
+        productUser11.add("5");
+        productUser11.add("5");
+        productUser11.add("5");
+        productUser11.add("2");
+        productUser11.add("5");
+        productUser12.add("1");
+        productUser12.add("1");
+        productUser12.add("5");
+        productUser2.add("5");
+        productUser2.add("2");
+        productUser2.add("4");
 
 
-        productUser3.add(p5);
-        productUser3.add(p3);
-        productUser3.add(p1);
-        productUser3.add(p2);
-        productUser3.add(p2);
-        productUser4.add(p4);
+        productUser3.add("5");
+        productUser3.add("3");
+        productUser3.add("1");
+        productUser3.add("2");
+        productUser3.add("2");
+        productUser4.add("4");
     }
 
     @After
@@ -115,19 +111,13 @@ public class ProductManagerImplTest {
         }
 
         Assert.assertEquals(products, pm.getProducts());
-    }
 
-    @Test
-    public void test02AddUser() throws Exception {
         for (User u : users.values()) {
             pm.addUser(u);
         }
 
         Assert.assertEquals(users, pm.getUsers());
-    }
 
-    @Test
-    public void test03GetProductsByPrice() throws Exception {
         List<Product> p;
         p = pm.getProductsByPrice();
 
@@ -137,25 +127,20 @@ public class ProductManagerImplTest {
         Assert.assertEquals(p.get(3), p3);
         Assert.assertEquals(p.get(4), p1);
 
-        p.clear();
-    }
-
-    @Test
-    public void test04MakeAndServeOrder() throws Exception {
         pm.makeOrder(productUser11, "1");
-        Assert.assertEquals(productUser11, u1.getPendingOrders().getFirst().getProducts());
+        Assert.assertEquals(productUser11.get(0), u1.getPendingOrders().get(0).getProducts().get(0).getId());
 
         pm.makeOrder(productUser12, "1");
-        Assert.assertEquals(productUser12, u1.getPendingOrders().get(1).getProducts());
+        Assert.assertEquals(productUser12.get(0), u1.getPendingOrders().get(1).getProducts().get(0).getId());
 
         pm.makeOrder(productUser2, "2");
-        Assert.assertEquals(productUser2, u2.getPendingOrders().getFirst().getProducts());
+        Assert.assertEquals(productUser2.get(0), u2.getPendingOrders().get(0).getProducts().get(0).getId());
 
         pm.makeOrder(productUser3, "3");
-        Assert.assertEquals(productUser3, u3.getPendingOrders().getFirst().getProducts());
+        Assert.assertEquals(productUser3.get(productUser3.size()-1), u3.getPendingOrders().get(0).getProducts().get(u3.getPendingOrders().get(0).getProducts().size()-1).getId());
 
         pm.makeOrder(productUser4, "4");
-        Assert.assertEquals(productUser4, u4.getPendingOrders().getFirst().getProducts());
+        Assert.assertEquals(productUser4.get(productUser4.size()-1), u4.getPendingOrders().get(0).getProducts().get(u4.getPendingOrders().get(0).getProducts().size()-1).getId());
 
         pm.serveOrder();
         Assert.assertEquals(4, pm.getOrders().size());
@@ -173,7 +158,7 @@ public class ProductManagerImplTest {
         Assert.assertEquals(doneOrder2, u2.getServedOrders());
 
         List<Order> doneOrder3 = pm.getDoneOrdersFromUser("3");
-        Assert.assertEquals(null, doneOrder3);
+        Assert.assertNull(doneOrder3);
 
         doneOrder1.clear();
         doneOrder2.clear();

@@ -24,26 +24,26 @@ public class ProductsService {
     public ProductsService() {
         this.pm = ProductManagerImpl.getInstance();
         if (pm.getProducts().size() == 0) {
-            Product p1 = new Product(1, "Hamburguesa", 7.5);
-            Product p2 = new Product(2, "Patates", 3);
-            Product p3 = new Product(3, "Pasta", 5);
-            Product p4 = new Product(4, "Entrepà", 4.5);
-            Product p5 = new Product(5, "Aigua", 0.75);
+            Product p1 = new Product("1", "Hamburguesa", 7.5);
+            Product p2 = new Product("2", "Patates", 3);
+            Product p3 = new Product("3", "Pasta", 5);
+            Product p4 = new Product("4", "Entrepà", 4.5);
+            Product p5 = new Product("5", "Aigua", 0.75);
 
-            User u1 = new User(1, "Josep");
-            User u2 = new User(2, "Toni");
-            User u3 = new User(3, "Albert");
-            User u4 = new User(4, "Antonia");
-            User u5 = new User(5, "Carla");
+            User u1 = new User("1", "Josep");
+            User u2 = new User("2", "Toni");
+            User u3 = new User("3", "Albert");
+            User u4 = new User("4", "Antonia");
+            User u5 = new User("5", "Carla");
 
             List<Product> products = new ArrayList<>();
             HashMap<String, User> users = new HashMap<>();
 
-            List<Product> productUser11 =  new ArrayList<>();
-            List<Product> productUser12 =  new ArrayList<>();
-            List<Product> productUser2 =  new ArrayList<>();
-            List<Product> productUser3 =  new ArrayList<>();
-            List<Product> productUser4 =  new ArrayList<>();
+            List<String> productUser11 =  new ArrayList<>();
+            List<String> productUser12 =  new ArrayList<>();
+            List<String> productUser2 =  new ArrayList<>();
+            List<String> productUser3 =  new ArrayList<>();
+            List<String> productUser4 =  new ArrayList<>();
 
             products.add(p1);
             products.add(p2);
@@ -51,31 +51,31 @@ public class ProductsService {
             products.add(p4);
             products.add(p5);
 
-            users.put(String.valueOf(u1.getId()), u1);
-            users.put(String.valueOf(u2.getId()), u2);
-            users.put(String.valueOf(u3.getId()), u3);
-            users.put(String.valueOf(u4.getId()), u4);
-            users.put(String.valueOf(u5.getId()), u5);
+            users.put(u1.getId(), u1);
+            users.put(u2.getId(), u2);
+            users.put(u3.getId(), u3);
+            users.put(u4.getId(), u4);
+            users.put(u5.getId(), u5);
 
-            productUser11.add(p5);
-            productUser11.add(p5);
-            productUser11.add(p2);
-            productUser11.add(p2);
-            productUser11.add(p5);
-            productUser12.add(p1);
-            productUser12.add(p1);
-            productUser12.add(p5);
-            productUser2.add(p5);
-            productUser2.add(p2);
-            productUser2.add(p4);
+            productUser11.add("5");
+            productUser11.add("5");
+            productUser11.add("2");
+            productUser11.add("2");
+            productUser11.add("5");
+            productUser12.add("1");
+            productUser12.add("1");
+            productUser12.add("5");
+            productUser2.add("5");
+            productUser2.add("2");
+            productUser2.add("4");
 
 
-            productUser3.add(p5);
-            productUser3.add(p3);
-            productUser3.add(p1);
-            productUser3.add(p2);
-            productUser3.add(p2);
-            productUser4.add(p4);
+            productUser3.add("5");
+            productUser3.add("3");
+            productUser3.add("1");
+            productUser3.add("2");
+            productUser3.add("2");
+            productUser4.add("4");
 
             for (Product p : products) {
                 pm.addProduct(p);
@@ -97,7 +97,7 @@ public class ProductsService {
     }
 
     @GET
-    @ApiOperation(value = "get all products sorted by ascending price", notes = "asdasd")
+    @ApiOperation(value = "get all products sorted by ascending price")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer = "List")
     })
@@ -118,10 +118,10 @@ public class ProductsService {
     })
     @Path("/makeOrder/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response makeOrder(List<Product> products, @PathParam("id") String id) {
-        if (products == null || pm.getUser(id) == null) return Response.status(500).entity(products).build();
-        pm.makeOrder(products, id);
-        return Response.status(201).entity(products).build();
+    public Response makeOrder(List<String> idProducts, @PathParam("id") String idUser) {
+        if (idProducts == null || pm.getUser(idUser) == null) return Response.status(500).entity(idProducts).build();
+        pm.makeOrder(idProducts, idUser);
+        return Response.status(201).entity(idProducts).build();
     }
 
     @POST
@@ -139,13 +139,15 @@ public class ProductsService {
     @GET
     @ApiOperation(value = "get all done orders form a user")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer = "List")
+            @ApiResponse(code = 201, message = "Successful", response = Order.class, responseContainer = "List"),
+            @ApiResponse(code = 404, message = "Not found")
     })
-    @Path("/doneProducts/{id}")
+    @Path("/doneOrders/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDoneOrdersFromUser(@PathParam("id") String id) {
         List<Order> orders = this.pm.getDoneOrdersFromUser(id);
 
+        if (orders == null) return Response.status(404).entity("Not found").build();
         GenericEntity<List<Order>> entity = new GenericEntity<List<Order>>(orders) {};
         return Response.status(201).entity(entity).build();
     }
