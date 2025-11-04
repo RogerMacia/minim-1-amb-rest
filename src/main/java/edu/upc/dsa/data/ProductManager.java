@@ -15,7 +15,7 @@ public interface ProductManager {
 
     public void makeOrder(List<String> idProducts, String idUser);
 
-    public void serveOrder();
+    public Order serveOrder();
 
     public List<Order> getDoneOrdersFromUser(String id);
 

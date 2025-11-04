@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Comparator;
 import java.util.LinkedList;
+
+import edu.upc.dsa.exceptions.EmptyQueueException;
 import org.apache.log4j.Logger;
 import edu.upc.dsa.models.*;
 import edu.upc.dsa.util.RandomUtils;
@@ -126,8 +128,14 @@ public class ProductManagerImpl implements ProductManager {
     }
 
     @Override
-    public void serveOrder() {
-        Order o = orders.pop();
+    public Order serveOrder() {
+        Order o;
+        try {
+            o = orders.pop();
+        }
+        catch (EmptyQueueException e) {
+            return null;
+        }
         logger.info("Ordre treta de la cua");
 
         User user = o.getUser();
@@ -151,6 +159,7 @@ public class ProductManagerImpl implements ProductManager {
         else {
             logger.error("Ordre no eliminada de l'usuari", new RuntimeException("Ordre no eliminada de l'usuari"));
         }
+        return o;
     }
 
     @Override
